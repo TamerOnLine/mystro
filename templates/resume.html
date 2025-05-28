@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Resume</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body {% if settings['body_font'] %}style="font-family: {{ settings['body_font'] }};"{% endif %}>
+  <div class="resume-container">
+    {% for section in sections %}
+      <div class="resume-section">
+        <h2 {% if settings['section_title_css'] %}style="{{ settings['section_title_css'] }}"{% endif %}>{{ section.title }}</h2>
+        <div class="section-content" {% if settings['paragraph_css'] %}style="{{ settings['paragraph_css'] }}"{% endif %}>
+          {{ section.content | safe }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

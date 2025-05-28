@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Section</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Section</h1>
+
+    <form method="post">
+      <label>Title:</label><br>
+      <input type="text" name="title" value="{{ section.title }}" required><br><br>
+
+      <label>Order:</label><br>
+      <input type="number" name="order" value="{{ section.order }}"><br><br>
+
+      <label>Visible:</label>
+      <input type="checkbox" name="is_visible" {% if section.is_visible %}checked{% endif %}><br><br>
+
+      <label>Content:</label><br>
+      <textarea name="content" rows="10" cols="80">{{ section.content }}</textarea><br><br>
+
+      <button type="submit">Save Changes</button>
+      <a href="{{ url_for('resume.admin') }}">Cancel</a>
+    </form>
+  </div>
+</body>
+</html>

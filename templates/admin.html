@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    ClassicEditor
+      .create(document.querySelector('textarea[name="content"]'))
+      .catch(error => {
+        console.error(error);
+      });
+  });
+</script>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Resume Builder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🛠️ Admin Panel</h1>
+
+    <form method="post">
+      {% if editing %}
+        <input type="hidden" name="section_id" value="{{ editing.id }}">
+        <h2>✏️ Edit Section</h2>
+      {% else %}
+        <h2>➕ Add New Section</h2>
+      {% endif %}
+
+      <label>Section Title:</label><br>
+      <input type="text" name="title" required value="{{ editing.title if editing else '' }}"><br><br>
+
+      <label>Order:</label><br>
+      <input type="number" name="order" value="{{ editing.order if editing else 0 }}"><br><br>
+
+      <label>Visible:</label>
+      <input type="checkbox" name="is_visible" {% if editing and editing.is_visible %}checked{% elif not editing %}checked{% endif %}><br><br>
+
+      <!-- ✅ هنا تضيف Format Type -->
+      <label>Format Type:</label><br>
+      <select name="format">
+        <option value="paragraph">Paragraph</option>
+        <option value="list">List</option>
+      </select><br><br>
+
+      <!-- ثم يستمر النموذج -->
+      <label>Content:</label><br>
+      <textarea name="content" rows="10" cols="80">{{ editing.content if editing else '' }}</textarea>
+
+
+
+      
+      <button type="submit">{{ 'Update Section' if editing else 'Add Section' }}</button>
+      {% if editing %}
+        <a href="{{ url_for('resume.admin') }}">Cancel</a>
+      {% endif %}
+    </form>
+
+    <hr>
+
+    <h2>Existing Sections</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Order</th>
+          <th>Visible</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sec in sections %}
+          <tr>
+            <td>{{ sec.title }}</td>
+            <td>{{ sec.order }}</td>
+            <td>{{ "✅" if sec.is_visible else "❌" }}</td>
+            <td>
+              <a href="{{ url_for('resume.admin', edit_id=sec.id) }}">Edit</a> |
+              <a href="{{ url_for('resume.delete_section', section_id=sec.id) }}"
+                 onclick="return confirm('Are you sure you want to delete this section?');">
+                Delete
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إعدادات تنسيق السيرة الذاتية</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+      direction: rtl;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: right;
+    }
+    th {
+      background-color: #eee;
+    }
+    input[type="text"], select, input[type="color"] {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 8px;
+    }
+    button {
+      padding: 8px 20px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: #333;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚙️ إعدادات تنسيق السيرة الذاتية</h1>
+    <form method="post">
+      <table>
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Description</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- section_title_css -->
+          <tr>
+            <td>section_title_css</td>
+            <td>تنسيق عنوان القسم</td>
+            <td>
+              <label>حجم الخط:
+                <select id="titleFontSize">
+                  <option value="18px">18px</option>
+                  <option value="20px">20px</option>
+                  <option value="22px">22px</option>
+                  <option value="24px">24px</option>
+                </select>
+              </label><br>
+              <label>وزن الخط:
+                <select id="titleFontWeight">
+                  <option value="normal">عادي</option>
+                  <option value="bold">غامق</option>
+                </select>
+              </label><br>
+              <label>لون الخط:
+                <input type="color" id="titleFontColor">
+              </label>
+              <input type="hidden" name="section_title_css" id="section_title_css">
+            </td>
+          </tr>
+          <!-- paragraph_css -->
+          <tr>
+            <td>paragraph_css</td>
+            <td>تنسيق فقرات القسم</td>
+            <td>
+              <label>الهامش السفلي:
+                <select id="paragraphMargin">
+                  <option value="5px">5px</option>
+                  <option value="10px">10px</option>
+                  <option value="15px">15px</option>
+                </select>
+              </label><br>
+              <label>تباعد الأسطر:
+                <select id="lineHeight">
+                  <option value="1.4">1.4</option>
+                  <option value="1.6">1.6</option>
+                  <option value="1.8">1.8</option>
+                </select>
+              </label><br>
+              <label>محاذاة:
+                <select id="textAlign">
+                  <option value="right">يمين</option>
+                  <option value="left">يسار</option>
+                  <option value="center">وسط</option>
+                </select>
+              </label>
+              <input type="hidden" name="paragraph_css" id="paragraph_css">
+            </td>
+          </tr>
+          <!-- body_font -->
+          <tr>
+            <td>body_font</td>
+            <td>الخط العام للنص</td>
+            <td>
+              <label>نوع الخط:
+                <select name="body_font" id="bodyFontSelect">
+                  <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                  <option value="'Arial', sans-serif">Arial</option>
+                  <option value="'Tahoma', sans-serif">Tahoma</option>
+                  <option value="'Cairo', sans-serif">Cairo (عربي)</option>
+                </select>
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <button type="submit">💾 حفظ الإعدادات</button>
+    </form>
+    <a href="{{ url_for('resume.admin') }}" class="back-link">⬅️ رجوع إلى لوحة الأقسام</a>
+  </div>
+  <script>
+    const savedSettings = {{ settings_dict | tojson }};
+    function setSelectValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = value;
+    }
+    function parseCSSValue(css, key) {
+      const regex = new RegExp(`${key}:\\s*([^;]+);`);
+      const match = css.match(regex);
+      return match ? match[1] : '';
+    }
+    function updateCSS() {
+      const titleCSS = `font-size: ${titleFontSize.value}; font-weight: ${titleFontWeight.value}; color: ${titleFontColor.value};`;
+      const paragraphCSS = `margin-bottom: ${paragraphMargin.value}; line-height: ${lineHeight.value}; text-align: ${textAlign.value};`;
+      document.getElementById('section_title_css').value = titleCSS;
+      document.getElementById('paragraph_css').value = paragraphCSS;
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const titleCSS = savedSettings["section_title_css"] || "";
+      const paragraphCSS = savedSettings["paragraph_css"] || "";
+      const bodyFont = savedSettings["body_font"] || "";
+      setSelectValue("titleFontSize", parseCSSValue(titleCSS, "font-size"));
+      setSelectValue("titleFontWeight", parseCSSValue(titleCSS, "font-weight"));
+      document.getElementById("titleFontColor").value = parseCSSValue(titleCSS, "color");
+      setSelectValue("paragraphMargin", parseCSSValue(paragraphCSS, "margin-bottom"));
+      setSelectValue("lineHeight", parseCSSValue(paragraphCSS, "line-height"));
+      setSelectValue("textAlign", parseCSSValue(paragraphCSS, "text-align"));
+      setSelectValue("bodyFontSelect", bodyFont);
+      updateCSS();
+    });
+    document.querySelector("form").addEventListener("submit", function(e) {
+      updateCSS();
+    });
+  </script>
+</body>
+</html>
