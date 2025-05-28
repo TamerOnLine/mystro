@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to My Resume</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>👋 Welcome to My Resume Site</h1>
+    <p>This is a dynamic resume builder powered by Flask.</p>
+
+    <ul>
+      <li><a href="{{ url_for('resume.resume_page') }}">📄 View Resume</a></li>
+      <li><a href="{{ url_for('resume.admin') }}">🛠️ Admin Panel</a></li>
+      <li><a href="{{ url_for('resume.admin_settings') }}">⚙️ Design Settings</a></li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -2,10 +2,15 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from models.resume_section import ResumeSection, ResumeSetting, get_settings_dict
 from config.database import SessionLocal
 from logic.formatter import format_text_to_html
+from flask import render_template
 
 
 
 resume_bp = Blueprint("resume", __name__)
+
+@resume_bp.route("/")
+def index():
+    return render_template("index.html")
 
 
 
