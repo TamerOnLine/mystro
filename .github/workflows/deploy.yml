@@ -20,7 +20,7 @@ jobs:
 
       - name: 🚀 Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no mystro@78.47.205.8 << 'EOF'
+          ssh -p 13976 -o StrictHostKeyChecking=no mystro@78.47.205.8 << 'EOF'
             cd ~/mystro
             git pull origin main
             # 
