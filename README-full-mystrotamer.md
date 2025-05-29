@@ -38,10 +38,27 @@ ssh -i ${env:USERPROFILE}\.ssh\id_mystrotamer -p 13976 mystrotamer@78.47.205.8
 
 ---
 
-## 🔗 3. Generate GitHub Key from Server
+## 🖥️ 3. Generate SSH Key on Local Machine (Windows) for GitHub
+
+```powershell
+ssh-keygen -t ed25519 -C "mystrotamer-github-local" -f ${env:USERPROFILE}\.ssh\id_github_mystrotamer
+Get-Content ${env:USERPROFILE}\.ssh\id_github_mystrotamer.pub | Set-Clipboard
+```
+
+📌 Go to [https://github.com/settings/keys](https://github.com/settings/keys), click **New SSH Key**, and paste the copied key.
+
+✅ Test the connection from your local machine:
+
+```powershell
+ssh -T git@github.com
+```
+
+---
+
+## 🔗 4. Generate GitHub Key from Server
 
 ```bash
-ssh-keygen -t ed25519 -C "mystrotamer-key-local to server" -f ~/.ssh/id_github_mystrotamer
+ssh-keygen -t ed25519 -C "mystrotamer-github-server" -f ~/.ssh/id_github_mystrotamer
 cat ~/.ssh/id_github_mystrotamer.pub
 ```
 
@@ -53,7 +70,7 @@ ssh -T git@github.com
 
 ---
 
-## 📦 4. Clone the Project from GitHub
+## 📦 5. Clone the Project from GitHub
 
 ```bash
 cd ~
@@ -63,7 +80,7 @@ cd mystrotamer
 
 ---
 
-## 🐍 5. Setup Python Environment
+## 🐍 6. Setup Python Environment
 
 ```bash
 python3 -m venv venv
@@ -74,20 +91,20 @@ pip install -r requirements.txt
 
 ---
 
-## 💻 6. Run Flask Locally
+## 💻 7. Run Flask Locally
 
 ```bash
 export FLASK_APP=app.py
 export FLASK_ENV=development
-flask run --host=0.0.0.0 --port=7777
+flask run --host=0.0.0.0 --port=5777
 ```
 
 ---
 
-## 🌀 7. Setup Gunicorn and Nginx
+## 🌀 8. Setup Gunicorn and Nginx
 
 ```bash
-gunicorn --bind 127.0.0.1:8888 myapp:app
+gunicorn --bind 127.0.0.1:8777 myapp:app
 ```
 
 Configure Nginx File:
@@ -98,7 +115,7 @@ server {
     server_name mystrotamer.com;
 
     location / {
-        proxy_pass http://127.0.0.1:8888;
+        proxy_pass http://127.0.0.1:8777;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
@@ -113,7 +130,7 @@ sudo systemctl reload nginx
 
 ---
 
-## 🔒 8. Enable HTTPS
+## 🔒 9. Enable HTTPS
 
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
@@ -122,11 +139,11 @@ sudo certbot --nginx -d mystrotamer.com --http-01-port 80
 
 ---
 
-## 🛡️ 9. Enable UFW Firewall
+## 🛡️ 10. Enable UFW Firewall
 
 ```bash
 sudo ufw allow OpenSSH
-sudo ufw allow 80,443,7777/tcp
+sudo ufw allow 80,443,5777/tcp
 sudo ufw enable
 ```
 
